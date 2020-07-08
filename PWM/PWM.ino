@@ -1,14 +1,9 @@
 #include "prescaler.h"
 #include <LiquidCrystal.h>
 //LCD pin to Arduino
-const int pin_RS = 8; 
-const int pin_EN = 9; 
-const int pin_d4 = 4; 
-const int pin_d5 = 5; 
-const int pin_d6 = 6; 
-const int pin_d7 = 7; 
-const int pin_BL = 10; 
-LiquidCrystal lcd( 2,4,8,7,6,5);
+const int currentPin =9;
+const int negPin = 10;
+LiquidCrystal lcd( 7,6, 5, 4, 3, 2);
 byte ohm[] = {
   B00000,
   B01110,
@@ -20,18 +15,24 @@ byte ohm[] = {
   B00000
 };
 void setup() {
+   pinMode(negPin, OUTPUT);setClockPrescaler(CLOCK_PRESCALER_1);
+  analogWrite(3, 127);
   lcd.begin(16, 2);
   lcd.createChar(0, ohm);
   lcd.home();
   lcd.print("measuring...");
   // put your setup code here, to run once:
-  setClockPrescaler(CLOCK_PRESCALER_1);
-  pinMode(11, OUTPUT); // Set pin 10 as output
+  
+  pinMode(curretnPin, OUTPUT); // Set pin 10 as output
+  pinMode(negPin, OUTPUT);
+  
+  
+
   Serial.begin(9600);
 
   // put your main code here, to run repeatedly:
   double V = analogRead(A4)/1023.0*5;
-  analogWrite(3, 4); 
+  analogWrite(currentPin, 4); 
   trueDelay(1000); 
   double V1 = 0;
   double I1 = 0;
@@ -43,7 +44,7 @@ void setup() {
   V1/=1000;
   I1/=1000;
   String result = "V1: ";
-  analogWrite(3, 130);
+  analogWrite(currentPin, 130);
   trueDelay(1000);
   double V2 = 0;
   double I2 = 0;
@@ -60,7 +61,7 @@ void setup() {
   Serial.print("I1: ");
   Serial.println(I1 *1000);
   double r = -(V2-V1)/(I2-I1)*1000;
-  analogWrite(3, 0);
+  analogWrite(currentPin, 0);
   trueDelay(20);
   
   lcd.clear();
@@ -79,6 +80,6 @@ void setup() {
 }
 
 void loop() {
- 
+   
   
 }
